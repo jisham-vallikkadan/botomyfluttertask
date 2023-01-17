@@ -1,3 +1,4 @@
+import 'package:botomyfluttertask/screens/homepage.dart';
 import 'package:flutter/material.dart';
 
 class Authentication extends StatelessWidget {
@@ -17,7 +18,9 @@ class Authentication extends StatelessWidget {
             Column(
               children: [
                 GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => Homepage(),));
+                  },
                   child: Container(
                     margin: EdgeInsets.only(left: 20, right: 20),
                     width: double.infinity,
@@ -36,7 +39,7 @@ class Authentication extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.only(left: 80),
                           child: Text(
-                            'Googel',
+                            'Google',
                             style: TextStyle(
                                 fontSize: 18,
                                 color: Colors.white,
@@ -51,7 +54,9 @@ class Authentication extends StatelessWidget {
                   height: 10,
                 ),
                 GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => Homepage(),));
+                  },
                   child: Container(
                     margin: EdgeInsets.only(left: 20, right: 20),
                     width: double.infinity,

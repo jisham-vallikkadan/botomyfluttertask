@@ -1,11 +1,15 @@
 import 'dart:developer';
 
+import 'package:botomyfluttertask/screens/cartpage.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../model/categorymodel.dart';
 import '../model/reviewmodel.dart';
-import '../sevive/api.dart';
+import '../sevive/providerclass.dart';
 import '../widgets/rowbuilder.dart';
+import '../widgets/shimmer.dart';
 
 class Homepage extends StatefulWidget {
   const Homepage({Key? key}) : super(key: key);
@@ -28,7 +32,8 @@ class _HomepageState extends State<Homepage> {
         click: () {}, txt: 'Reviews', icon: Icons.reviews_outlined),
     Headsectionmodeil(click: () {}, txt: 'Blog', icon: Icons.message),
   ];
-  Api v = new Api();
+  // int? itemprice;
+
   @override
   // void initState() {
   //   // TODO: implement initState
@@ -44,10 +49,7 @@ class _HomepageState extends State<Homepage> {
           appBar: AppBar(
             backgroundColor: Colors.grey[300],
             elevation: 0,
-            leading: Icon(
-              Icons.arrow_back,
-              color: Colors.black,
-            ),
+
             title: Card(
               elevation: 3,
               shape: OutlineInputBorder(
@@ -97,7 +99,10 @@ class _HomepageState extends State<Homepage> {
                                 width: 80,
                                 height: 80,
                                 decoration: BoxDecoration(
-                                    // image: DecorationImage(image: AssetImage('images/6abdfab03c8818fbeacbc1cd29aed18a.jpg'),fit: BoxFit.fill),
+                                    image: DecorationImage(
+                                        image: NetworkImage(
+                                            'https://www.tazzakitchen.com/wp-content/uploads/SausageHoneyPizza_KaleChilies_Guac_BrisketTacos_IMG_4548-2.jpg'),
+                                        fit: BoxFit.fill),
                                     color: Colors.black,
                                     borderRadius: BorderRadius.circular(20)),
                               ),
@@ -109,7 +114,7 @@ class _HomepageState extends State<Homepage> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        'Taza Kithen',
+                                        'Taza Kitchen',
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 20),
@@ -277,172 +282,223 @@ class _HomepageState extends State<Homepage> {
                     ),
                     Expanded(
                       child: FutureBuilder<List<CategoryModel>>(
-                        future: v.Getdish(),
+                        future:
+                            Provider.of<TaskProvider>(context, listen: false)
+                                .Getdish(),
                         builder: (context, snapshot) {
-                          return ListView.builder(
-                            itemCount: snapshot.data!.length,
-                            itemBuilder: (context, index) {
-                              var dish = snapshot.data![index];
+                          if(snapshot.hasData){
+                            return ListView.builder(
+                              itemCount: snapshot.data!.length,
+                              itemBuilder: (context, index) {
+                                var dish = snapshot.data![index];
 
-                              return Card(
-                                color: Colors.grey[300],
-                                elevation: 10,
-                                child: ExpansionTile(
-                                  title: Text('${dish.categoryname}'),
-                                  children: [
-                                    Container(
-                                      height: 150,
-                                      child: ListView.builder(
-                                        itemCount: dish.product!.length,
-                                        itemBuilder: (context, index) {
-                                          log("abc +${dish.product![index].kitchenitemimage!.first.pimage}");
-                                          return Card(
-
-                                            color: Colors.grey[350],
-                                            child: Padding(
-                                              padding: const EdgeInsets.only(
-                                                  right: 8,
-                                                  top: 8,
-                                                  left: 8,
-                                                  bottom: 15),
-                                              child: Row(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Expanded(
-                                                    child: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Container(
-                                                          padding: EdgeInsets
-                                                              .symmetric(
-                                                                  horizontal:
-                                                                      10,
-                                                                  vertical: 3),
-                                                          decoration: BoxDecoration(
-                                                              color: Colors.red,
-                                                              borderRadius: BorderRadius.only(
-                                                                  topLeft: Radius
-                                                                      .circular(
-                                                                          10),
-                                                                  bottomRight: Radius
-                                                                      .circular(
-                                                                          10))),
-                                                          child: Text(
-                                                            "20%off }",
-                                                            style: TextStyle(
-                                                                color: Colors
-                                                                    .white),
-                                                          ),
-                                                        ),
-                                                        Row(
-                                                          children: [
-                                                            Icon(
-                                                              Icons
-                                                                  .crop_square_outlined,
-                                                              color: Colors.red,
-                                                            ),
-                                                            Expanded(
-                                                              child: Text(
-                                                                '${dish.product![index].kitchen_item_name}',
-                                                                style: TextStyle(
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold),
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                        Padding(
-                                                            padding:
-                                                                EdgeInsets.only(
-                                                                    top: 5)),
-                                                        Text(
-                                                          '(1 min qty)',
-                                                          style: TextStyle(
-                                                              color: Colors
-                                                                  .black45),
-                                                        ),
-                                                        Padding(
-                                                            padding:
-                                                                EdgeInsets.only(
-                                                                    top: 5)),
-                                                        Text(
-                                                          'RS 200',
-                                                          style: TextStyle(
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold),
-                                                        )
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  Column(
-                                                    children: [
-                                                      Container(
-                                                        width: 80,
-                                                        height: 80,
-                                                        decoration:
-                                                            BoxDecoration(
-                                                                image: DecorationImage(image: NetworkImage('${dish.product![index].kitchenitemimage!.first.pimage}'),fit: BoxFit.fill),
-                                                                color: Colors
-                                                                    .black,
-                                                                borderRadius:
-                                                                    BorderRadius
+                                return Card(
+                                  color: Colors.grey[300],
+                                  elevation: 10,
+                                  child: ExpansionTile(
+                                    title: Text(
+                                      '${dish.categoryname}',
+                                      style:
+                                      TextStyle(fontWeight: FontWeight.bold),
+                                    ),
+                                    children: [
+                                      Container(
+                                        height: 150,
+                                        child: ListView.builder(
+                                          itemCount: dish.product!.length,
+                                          itemBuilder: (context, index) {
+                                            var Provide =
+                                            Provider.of<TaskProvider>(context,
+                                                listen: false);
+                                            // log("abc +${dish.product![index].kitchenitemimage![0].pimage}");
+                                            return Card(
+                                              color: Colors.grey[350],
+                                              child: Padding(
+                                                padding: const EdgeInsets.only(
+                                                    right: 8,
+                                                    top: 8,
+                                                    left: 8,
+                                                    bottom: 15),
+                                                child: Row(
+                                                  crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                                  children: [
+                                                    Expanded(
+                                                      child: Column(
+                                                        crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                        children: [
+                                                          Container(
+                                                            padding: EdgeInsets
+                                                                .symmetric(
+                                                                horizontal:
+                                                                10,
+                                                                vertical: 3),
+                                                            decoration: BoxDecoration(
+                                                                color: Colors.red,
+                                                                borderRadius: BorderRadius.only(
+                                                                    topLeft: Radius
                                                                         .circular(
-                                                                            10)),
-                                                      ),
-                                                      SizedBox(
-                                                        height: 5,
-                                                      ),
-                                                      Container(
-                                                        width: 100,
-                                                        height: 30,
-                                                        decoration: BoxDecoration(
-                                                            color: Colors.blue,
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        5)),
-                                                        child: Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .spaceBetween,
-                                                          children: [
-                                                            GestureDetector(
-                                                                child: Icon(Icons
-                                                                    .minimize),
-                                                                onTap: () {}),
-                                                            Text(
-                                                              '1',
+                                                                        10),
+                                                                    bottomRight: Radius
+                                                                        .circular(
+                                                                        10))),
+                                                            child: Text(
+                                                              "20%off",
                                                               style: TextStyle(
-                                                                  fontWeight:
+                                                                  color: Colors
+                                                                      .white),
+                                                            ),
+                                                          ),
+                                                          Row(
+                                                            children: [
+                                                              Icon(
+                                                                Icons
+                                                                    .crop_square_outlined,
+                                                                color: Colors.red,
+                                                              ),
+                                                              Expanded(
+                                                                child: Text(
+                                                                  '${dish.product![index].kitchen_item_name}',
+                                                                  style: TextStyle(
+                                                                      fontWeight:
                                                                       FontWeight
                                                                           .bold),
-                                                            ),
-                                                            GestureDetector(
-                                                                onTap: () {},
-                                                                child: Icon(
-                                                                    Icons.add)),
-                                                          ],
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                          Padding(
+                                                              padding:
+                                                              EdgeInsets.only(
+                                                                  top: 5)),
+                                                          Text(
+                                                            '(1 min qty)',
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .black45),
+                                                          ),
+                                                          Padding(
+                                                              padding:
+                                                              EdgeInsets.only(
+                                                                  top: 5)),
+                                                          Row(
+                                                            children: [
+                                                              Text(
+                                                                '₹${dish.product![index].kitchen_item_amount}',
+                                                                style: TextStyle(
+                                                                    decoration:
+                                                                    TextDecoration
+                                                                        .lineThrough,
+                                                                    decorationThickness:
+                                                                    2,
+                                                                    fontWeight:
+                                                                    FontWeight
+                                                                        .bold),
+                                                              ),
+                                                              SizedBox(
+                                                                width: 5,
+                                                              ),
+                                                              Text(
+                                                                '₹${dish.prize = (dish.product![index].kitchen_item_amount) - (dish.product![index].item_discount_price!)}',
+                                                                style: TextStyle(
+                                                                    fontWeight:
+                                                                    FontWeight
+                                                                        .bold),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    Column(
+                                                      children: [
+                                                        Container(
+                                                          width: 80,
+                                                          height: 80,
+                                                          decoration: BoxDecoration(
+                                                              image: DecorationImage(
+                                                                  image: NetworkImage(
+                                                                      '${dish.product![index].kitchenitemimage!.first.pimage}'),
+                                                                  fit: BoxFit
+                                                                      .cover),
+                                                              color: Colors.black,
+                                                              borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                  10)),
                                                         ),
-                                                      )
-                                                    ],
-                                                  )
-                                                ],
+                                                        SizedBox(
+                                                          height: 5,
+                                                        ),
+                                                        Container(
+                                                          width: 100,
+                                                          height: 30,
+                                                          decoration: BoxDecoration(
+                                                              color: Colors.blue,
+                                                              borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                  5)),
+                                                          child: Row(
+                                                            mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceBetween,
+                                                            children: [
+                                                              GestureDetector(
+                                                                  child: Icon(Icons
+                                                                      .minimize),
+                                                                  onTap: () {
+                                                                    Provider.of<TaskProvider>(context,listen: false).dicrementProductcount(dish.product![index]!.products_status);
+                                                                  }),
+                                                              Text(
+                                                                '${dish.product![index].products_status}',
+                                                                style: TextStyle(
+                                                                    fontWeight:
+                                                                    FontWeight
+                                                                        .bold),
+                                                              ),
+                                                              GestureDetector(
+                                                                  onTap: () {
+                                                                    Provide.incrementProductcount(dish
+                                                                        .product![
+                                                                            index]
+                                                                        .products_status!);
+                                                                    print(dish.product![index].products_status);
+
+
+                                                                  },
+                                                                  child: Icon(
+                                                                      Icons.add)),
+                                                            ],
+                                                          ),
+                                                        )
+                                                      ],
+                                                    )
+                                                  ],
+                                                ),
                                               ),
-                                            ),
-                                          );
-                                        },
+                                            );
+                                          },
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
+                                );
+                              },
+                            );
+                          }else{
+                            return ListView.builder(itemCount: 5,itemBuilder: (context, index) {
+                              return Card(
+                                child: Shimmers(
+                                  height: 70,
+                                  width: double.infinity,
                                 ),
                               );
-                            },
-                          );
+                            },);
+                          }
+
                         },
                       ),
                     ),
@@ -466,7 +522,13 @@ class _HomepageState extends State<Homepage> {
                       Row(
                         children: [
                           TextButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => Cartpage(),
+                                    ));
+                              },
                               child: Row(
                                 children: [
                                   Text(
