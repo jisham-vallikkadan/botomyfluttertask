@@ -15,7 +15,8 @@ class RowBulider extends StatelessWidget {
     this.mainAxisSize:MainAxisSize.max,
     this.crossAxisAlignment:CrossAxisAlignment.start,
     this.textDirection,
-    this.verticalDirection:VerticalDirection.down
+    this.verticalDirection:VerticalDirection.down,
+
 
   }) : super(key: key);
 

@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../model/categorymodel.dart';
+import '../model/productmodel.dart';
 import '../model/reviewmodel.dart';
 import '../sevive/providerclass.dart';
 import '../widgets/rowbuilder.dart';
@@ -290,7 +291,9 @@ class _HomepageState extends State<Homepage> {
                             return ListView.builder(
                               itemCount: snapshot.data!.length,
                               itemBuilder: (context, index) {
+
                                 var dish = snapshot.data![index];
+
 
                                 return Card(
                                   color: Colors.grey[300],
@@ -310,7 +313,8 @@ class _HomepageState extends State<Homepage> {
                                             var Provide =
                                             Provider.of<TaskProvider>(context,
                                                 listen: false);
-                                            // log("abc +${dish.product![index].kitchenitemimage![0].pimage}");
+                                            dish.product![index].count=1;
+
                                             return Card(
                                               color: Colors.grey[350],
                                               child: Padding(
@@ -450,10 +454,17 @@ class _HomepageState extends State<Homepage> {
                                                                   child: Icon(Icons
                                                                       .minimize),
                                                                   onTap: () {
-                                                                    Provider.of<TaskProvider>(context,listen: false).dicrementProductcount(dish.product![index]!.products_status);
+                                                                    Provide.incrementProductcount(dish.product![index].count);
+                                                                    // Provider.of<TaskProvider>(context,listen: false).dicrementProductcount(dish.count);
+//                                                                     setState(() {
+//                                                                       dish.product![index].count=dish.product![index].count!-1;
+// print(dish.product![index].count);
+//                                                                     });
+                                                                    print(dish.product![index].count);
                                                                   }),
                                                               Text(
-                                                                '${dish.product![index].products_status}',
+                                                                '${dish.product![index].count}',
+
                                                                 style: TextStyle(
                                                                     fontWeight:
                                                                     FontWeight
@@ -461,13 +472,9 @@ class _HomepageState extends State<Homepage> {
                                                               ),
                                                               GestureDetector(
                                                                   onTap: () {
-                                                                    Provide.incrementProductcount(dish
-                                                                        .product![
-                                                                            index]
-                                                                        .products_status!);
-                                                                    print(dish.product![index].products_status);
 
 
+// print(dish.product!.length);
                                                                   },
                                                                   child: Icon(
                                                                       Icons.add)),

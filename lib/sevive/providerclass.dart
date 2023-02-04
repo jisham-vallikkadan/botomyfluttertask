@@ -9,11 +9,11 @@ import '../model/categorymodel.dart';
 import 'package:http/http.dart' as http;
 
 class TaskProvider with ChangeNotifier {
-  final List<CategoryModel> _cartitem = <CategoryModel>[
-
-  ];
+  final List<CategoryModel> _cartitem = <CategoryModel>[];
 
   List<CategoryModel> get cartitem => _cartitem;
+
+  List<CategoryModel> count = [];
 
   Future<List<CategoryModel>> Getdish() async {
     var url =
@@ -23,7 +23,7 @@ class TaskProvider with ChangeNotifier {
       var body = json.decode(responce.body);
       List<CategoryModel> listData = List<CategoryModel>.from(
           body['data'].map((v) => CategoryModel.fromJson(v))).toList();
-      print(listData);
+
       return listData;
     } else {
       List<CategoryModel> listData = [];
@@ -31,26 +31,20 @@ class TaskProvider with ChangeNotifier {
     }
   }
 
-  int incrementProductcount(int? count) {
-    count = count! + 1;
+  int incrementProductcount(var count) {
+    count = count + 1;
     notifyListeners();
     return count;
-
   }
 
   int dicrementProductcount(int? count) {
     count = count! + 1;
     notifyListeners();
     return count;
-
   }
 
-
-
-  void addtocart(CategoryModel categoryModel){
-_cartitem.add(categoryModel);
-notifyListeners();
+  void addtocart(CategoryModel categoryModel) {
+    _cartitem.add(categoryModel);
+    notifyListeners();
   }
-
-
 }
