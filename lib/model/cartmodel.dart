@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 class CartModel {
   String itemName;
-  String itemPrice;
+  int itemPrice;
   int itemId;
-  int itemCount;
+  int? itemCount;
+  int? toatalamount;
 
   CartModel(
-      {required this.itemCount,
+      { this.itemCount,
       required this.itemId,
       required this.itemName,
-      required this.itemPrice});
+      required this.itemPrice,
+       this.toatalamount});
 }

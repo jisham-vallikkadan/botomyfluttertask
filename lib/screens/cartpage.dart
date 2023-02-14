@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:botomyfluttertask/screens/homepage.dart';
 import 'package:botomyfluttertask/sevive/providerclass.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../widgets/columbulder.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 class Cartpage extends StatefulWidget {
   const Cartpage({Key? key}) : super(key: key);
@@ -13,10 +16,18 @@ class Cartpage extends StatefulWidget {
 }
 
 class _CartpageState extends State<Cartpage> {
-  int? amount;
   @override
   Widget build(BuildContext context) {
-    var Cartitem=context.watch<TaskProvider>().cartitem;
+    var Cartitem = context.watch<TaskProvider>().cartitem;
+    int itemtotel = 0;
+    double taxandcharge=0;
+    double Grandtotal=0;
+    for(int i = 0; i < Cartitem.length ; i++) {
+      itemtotel = (Cartitem[i].itemPrice * (Cartitem[i].itemCount??0)) + itemtotel;
+      taxandcharge=itemtotel*(0.05);
+      Grandtotal=itemtotel+taxandcharge;
+      print(itemtotel);
+    }
     return Scaffold(
       backgroundColor: Colors.grey[300],
       appBar: AppBar(
@@ -37,7 +48,10 @@ class _CartpageState extends State<Cartpage> {
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10)),
                   side: BorderSide(color: Colors.black)),
-              onPressed: () {},
+              onPressed: () {
+                Provider.of<TaskProvider>(context, listen: false)
+                    .clearcart(Cartitem[0]);
+              },
               label: Text(
                 'Clear Cart',
                 style: TextStyle(color: Colors.black54),
@@ -72,78 +86,94 @@ class _CartpageState extends State<Cartpage> {
                     child: ColumBulider(
                       itemCount: Cartitem!.length,
                       itemBuilder: (context, index) {
+                        // amount = Cartitem[index].itemPrice;
                         return Padding(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 8, vertical: 4),
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
+                            // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Icon(
                                 Icons.crop_square,
                                 color: Colors.red,
                               ),
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 2),
-                                    child: Text(
-                                      // 'Chiken porotta',
-                                      '${Cartitem[index].product![index].kitchen_item_name}',
-                                      style: TextStyle(
-                                          fontSize: 17,
-                                          fontWeight: FontWeight.w500),
-                                    ),
-                                  ),
-                                  Text(
-                                    '₹ "${Cartitem[index].prize}"',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 15),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(
-                                width: 30,
-                              ),
-                              Expanded(
+                              Container(
+                                width: 140,
+                                // color: Colors.blue,
                                 child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Container(
-                                      width: 100,
-                                      height: 30,
-                                      decoration: BoxDecoration(
-                                          color: Colors.grey[200],
-                                          borderRadius:
-                                              BorderRadius.circular(5),
-                                          border: Border.all(
-                                              color: Colors.black54)),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          GestureDetector(
-                                              child: Icon(Icons.minimize),
-                                              onTap: () {}),
-                                          Text(
-                                            '${Cartitem[index].product![index].products_status}',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                          GestureDetector(
-                                              onTap: () {},
-                                              child: Icon(Icons.add)),
-                                        ],
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 2),
+                                      child: Text(
+                                        '${Cartitem[index].itemName}',
+                                        style: TextStyle(
+                                            fontSize: 17,
+                                            fontWeight: FontWeight.w500),
                                       ),
                                     ),
+                                    Text(
+                                      '₹ ${Cartitem[index].itemPrice}',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 15),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Container(
+                                width: 110,
+                                height: 30,
+                                decoration: BoxDecoration(
+                                    color: Colors.grey[200],
+                                    borderRadius: BorderRadius.circular(5),
+                                    border: Border.all(color: Colors.black54)),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    GestureDetector(
+                                        child: Icon(Icons.minimize),
+                                        onTap: () {
+                                          setState(() {
+                                            Cartitem[index].itemCount =
+                                                Cartitem[index].itemCount! - 1;
+
+                                            Cartitem[index].toatalamount =
+                                                Cartitem[index].itemCount! *
+                                                    Cartitem[index].itemPrice;
+
+                                            print(Cartitem[index].toatalamount);
+                                          });
+                                        }),
+                                    Text(
+                                      '${Cartitem[index].itemCount}',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    GestureDetector(
+                                        onTap: () {
+                                          setState(() {
+                                            Cartitem[index].itemCount =
+                                                Cartitem[index].itemCount! + 1;
+
+                                            Cartitem[index].toatalamount =
+                                                Cartitem[index].itemCount! *
+                                                    Cartitem[index].itemPrice;
+
+                                            print(Cartitem[index].toatalamount);
+                                          });
+                                        },
+                                        child: Icon(Icons.add)),
                                   ],
                                 ),
                               ),
                               Padding(
                                 padding: const EdgeInsets.only(top: 5, left: 7),
                                 child: Text(
-                                  '₹${Cartitem[index].prize}',
+                                  '₹${Cartitem[index].toatalamount}',
                                   style: TextStyle(
                                       fontWeight: FontWeight.w500,
                                       fontSize: 15),
@@ -159,95 +189,6 @@ class _CartpageState extends State<Cartpage> {
                         borderRadius: BorderRadius.circular(10),
                         border: Border.all(color: Colors.black54)),
                   ),
-                  SizedBox(height: 5,),
-                  Container(
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: Colors.black54)),
-                    child: ColumBulider(itemCount: 3,itemBuilder: (context, index) {
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 4),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Icon(
-                              Icons.crop_square,
-                              color: Colors.red,
-                            ),
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 2),
-                                  child: Text(
-                                    'Chiken porotta',
-
-                                    style: TextStyle(
-                                        fontSize: 17,
-                                        fontWeight: FontWeight.w500),
-                                  ),
-                                ),
-                                Text(
-                                  '₹ "100"',
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 15),
-                                ),
-                              ],
-                            ),
-                            SizedBox(
-                              width: 30,
-                            ),
-                            Expanded(
-                              child: Column(
-                                children: [
-                                  Container(
-                                    width: 100,
-                                    height: 30,
-                                    decoration: BoxDecoration(
-                                        color: Colors.grey[200],
-                                        borderRadius:
-                                        BorderRadius.circular(5),
-                                        border: Border.all(
-                                            color: Colors.black54)),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        GestureDetector(
-                                            child: Icon(Icons.minimize),
-                                            onTap: () {}),
-                                        Text(
-                                          '1',
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                        GestureDetector(
-                                            onTap: () {},
-                                            child: Icon(Icons.add)),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 5, left: 7),
-                              child: Text(
-                                '₹100',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 15),
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
-                    },),
-                  ),
                   SizedBox(
                     height: 20,
                   ),
@@ -255,7 +196,6 @@ class _CartpageState extends State<Cartpage> {
                     'Bill Details',
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
-
                   SizedBox(
                     height: 20,
                   ),
@@ -278,7 +218,7 @@ class _CartpageState extends State<Cartpage> {
                               Padding(
                                 padding: const EdgeInsets.only(right: 15),
                                 child: Text(
-                                  '₹ 110.00',
+                                  '₹ ${itemtotel == null ? 0 : itemtotel}.00',
                                   style: TextStyle(fontWeight: FontWeight.w500),
                                 ),
                               )
@@ -294,7 +234,7 @@ class _CartpageState extends State<Cartpage> {
                               Padding(
                                 padding: const EdgeInsets.only(right: 15),
                                 child: Text(
-                                  '₹ 57.40',
+                                  '₹${taxandcharge}',
                                   style: TextStyle(fontWeight: FontWeight.w500),
                                 ),
                               )
@@ -313,7 +253,7 @@ class _CartpageState extends State<Cartpage> {
                               Padding(
                                 padding: const EdgeInsets.only(right: 15),
                                 child: Text(
-                                  '₹ 302.65',
+                                  '₹ ${Grandtotal}',
                                   style: TextStyle(fontWeight: FontWeight.w500),
                                 ),
                               ),
@@ -327,8 +267,43 @@ class _CartpageState extends State<Cartpage> {
                     height: 20,
                   ),
                   GestureDetector(
-                    onTap: (){
-                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Homepage(),));
+                    onTap: () {
+                      // Navigator.pushReplacement(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //       builder: (context) => Homepage(),
+                      //
+                      //
+                      //     ));
+                      if (Cartitem.length > 0) {
+                        Alert(
+                          context: context,
+                          type: AlertType.success,
+                          title: "Order successfully placed",
+                          desc: 'Total amount: ${Grandtotal}',
+                          buttons: [
+                            DialogButton(
+                              child: Text(
+                                "SUCCESS",
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 20),
+                              ),
+                              onPressed: () {
+                                Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => Homepage(),
+
+
+                                      ));
+                                Cartitem.clear();
+
+                              },
+                           width: 120,
+                            ),
+                          ],
+                        ).show();
+                      }
                     },
                     child: Container(
                       width: double.infinity,

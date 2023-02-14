@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:botomyfluttertask/model/productmodel.dart';
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
@@ -9,13 +10,17 @@ import '../model/categorymodel.dart';
 import 'package:http/http.dart' as http;
 
 class TaskProvider with ChangeNotifier {
-  final List<CategoryModel> _cartitem = <CategoryModel>[];
+  final List<CartModel> _cartitem = <CartModel>[];
 
-  List<CategoryModel> get cartitem => _cartitem;
+  List<CartModel> get cartitem => _cartitem;
 
-  List<CategoryModel> count = [];
+  List<CategoryModel> _dish = <CategoryModel>[];
 
-  Future<List<CategoryModel>> Getdish() async {
+  List<CategoryModel> get dish => _dish;
+
+  int itemCount = 0;
+
+  Future Getdish() async {
     var url =
         'https://www.butomy.com/api/getbusinessbytimeline-petpooja-timing?business_type=1&page_id=351&user_id=367&offset=0&products_type=all&placeorder_type=all';
     var responce = await http.get(Uri.parse(url));
@@ -24,27 +29,16 @@ class TaskProvider with ChangeNotifier {
       List<CategoryModel> listData = List<CategoryModel>.from(
           body['data'].map((v) => CategoryModel.fromJson(v))).toList();
 
-      return listData;
-    } else {
-      List<CategoryModel> listData = [];
-      return listData;
-    }
+      _dish = listData;
+      print(dish);
+      notifyListeners();
+    } else {}
   }
 
-  int incrementProductcount(var count) {
-    count = count + 1;
+  void clearcart(CartModel cartModel) {
+    _cartitem.clear();
     notifyListeners();
-    return count;
   }
 
-  int dicrementProductcount(int? count) {
-    count = count! + 1;
-    notifyListeners();
-    return count;
-  }
-
-  void addtocart(CategoryModel categoryModel) {
-    _cartitem.add(categoryModel);
-    notifyListeners();
-  }
+  notifyListeners();
 }

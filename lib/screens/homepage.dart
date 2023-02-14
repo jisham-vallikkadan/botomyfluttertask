@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:botomyfluttertask/model/cartmodel.dart';
 import 'package:botomyfluttertask/screens/cartpage.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -36,21 +37,59 @@ class _HomepageState extends State<Homepage> {
   // int? itemprice;
 
   @override
-  // void initState() {
-  //   // TODO: implement initState
-  //   v.Getdish();
-  //   super.initState();
-  // }
+  void initState() {
+    // TODO: implement initState
+
+    super.initState();
+    Provider.of<TaskProvider>(context, listen: false).Getdish();
+  }
 
   @override
   Widget build(BuildContext context) {
+    var provid = Provider.of<TaskProvider>(context, listen: false);
+    var dishlist = context.watch<TaskProvider>().dish;
+    var itemCount = context.watch<TaskProvider>().itemCount;
+    var cartlist = context.watch<TaskProvider>().cartitem;
     return SafeArea(
       child: Scaffold(
+          drawer: Drawer(
+            child: Column(
+              children: [
+                Container(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      CircleAvatar(
+                        radius: 50,
+                        child: Icon(
+                          Icons.person,
+                          size: 100,
+                        ),
+                      ),
+                      Text(
+                        'JISHAM',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20),
+                      )
+                    ],
+                  ),
+                  height: 200,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                      color: Colors.grey,
+                      borderRadius: BorderRadius.only(
+                          bottomRight: Radius.circular(10),
+                          bottomLeft: Radius.circular(10))),
+                )
+              ],
+            ),
+          ),
           backgroundColor: Colors.grey[300],
           appBar: AppBar(
             backgroundColor: Colors.grey[300],
             elevation: 0,
-
             title: Card(
               elevation: 3,
               shape: OutlineInputBorder(
@@ -282,18 +321,11 @@ class _HomepageState extends State<Homepage> {
                       height: 20,
                     ),
                     Expanded(
-                      child: FutureBuilder<List<CategoryModel>>(
-                        future:
-                            Provider.of<TaskProvider>(context, listen: false)
-                                .Getdish(),
-                        builder: (context, snapshot) {
-                          if(snapshot.hasData){
-                            return ListView.builder(
-                              itemCount: snapshot.data!.length,
+                      child: !dishlist.isEmpty
+                          ? ListView.builder(
+                              itemCount: dishlist.length,
                               itemBuilder: (context, index) {
-
-                                var dish = snapshot.data![index];
-
+                                var dish = dishlist[index];
 
                                 return Card(
                                   color: Colors.grey[300],
@@ -301,8 +333,8 @@ class _HomepageState extends State<Homepage> {
                                   child: ExpansionTile(
                                     title: Text(
                                       '${dish.categoryname}',
-                                      style:
-                                      TextStyle(fontWeight: FontWeight.bold),
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
                                     ),
                                     children: [
                                       Container(
@@ -311,9 +343,9 @@ class _HomepageState extends State<Homepage> {
                                           itemCount: dish.product!.length,
                                           itemBuilder: (context, index) {
                                             var Provide =
-                                            Provider.of<TaskProvider>(context,
-                                                listen: false);
-                                            dish.product![index].count=1;
+                                                Provider.of<TaskProvider>(
+                                                    context,
+                                                    listen: false);
 
                                             return Card(
                                               color: Colors.grey[350],
@@ -325,29 +357,31 @@ class _HomepageState extends State<Homepage> {
                                                     bottom: 15),
                                                 child: Row(
                                                   crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
+                                                      CrossAxisAlignment.start,
                                                   children: [
                                                     Expanded(
                                                       child: Column(
                                                         crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
+                                                            CrossAxisAlignment
+                                                                .start,
                                                         children: [
                                                           Container(
                                                             padding: EdgeInsets
                                                                 .symmetric(
-                                                                horizontal:
-                                                                10,
-                                                                vertical: 3),
+                                                                    horizontal:
+                                                                        10,
+                                                                    vertical:
+                                                                        3),
                                                             decoration: BoxDecoration(
-                                                                color: Colors.red,
+                                                                color:
+                                                                    Colors.red,
                                                                 borderRadius: BorderRadius.only(
                                                                     topLeft: Radius
                                                                         .circular(
-                                                                        10),
-                                                                    bottomRight: Radius
-                                                                        .circular(
-                                                                        10))),
+                                                                            10),
+                                                                    bottomRight:
+                                                                        Radius.circular(
+                                                                            10))),
                                                             child: Text(
                                                               "20%off",
                                                               style: TextStyle(
@@ -360,23 +394,24 @@ class _HomepageState extends State<Homepage> {
                                                               Icon(
                                                                 Icons
                                                                     .crop_square_outlined,
-                                                                color: Colors.red,
+                                                                color:
+                                                                    Colors.red,
                                                               ),
                                                               Expanded(
                                                                 child: Text(
                                                                   '${dish.product![index].kitchen_item_name}',
                                                                   style: TextStyle(
                                                                       fontWeight:
-                                                                      FontWeight
-                                                                          .bold),
+                                                                          FontWeight
+                                                                              .bold),
                                                                 ),
                                                               ),
                                                             ],
                                                           ),
                                                           Padding(
-                                                              padding:
-                                                              EdgeInsets.only(
-                                                                  top: 5)),
+                                                              padding: EdgeInsets
+                                                                  .only(
+                                                                      top: 5)),
                                                           Text(
                                                             '(1 min qty)',
                                                             style: TextStyle(
@@ -384,32 +419,20 @@ class _HomepageState extends State<Homepage> {
                                                                     .black45),
                                                           ),
                                                           Padding(
-                                                              padding:
-                                                              EdgeInsets.only(
-                                                                  top: 5)),
+                                                              padding: EdgeInsets
+                                                                  .only(
+                                                                      top: 5)),
                                                           Row(
                                                             children: [
-                                                              Text(
-                                                                '₹${dish.product![index].kitchen_item_amount}',
-                                                                style: TextStyle(
-                                                                    decoration:
-                                                                    TextDecoration
-                                                                        .lineThrough,
-                                                                    decorationThickness:
-                                                                    2,
-                                                                    fontWeight:
-                                                                    FontWeight
-                                                                        .bold),
-                                                              ),
                                                               SizedBox(
                                                                 width: 5,
                                                               ),
                                                               Text(
-                                                                '₹${dish.prize = (dish.product![index].kitchen_item_amount) - (dish.product![index].item_discount_price!)}',
+                                                                '₹${(dish.product![index].kitchen_item_amount)}',
                                                                 style: TextStyle(
                                                                     fontWeight:
-                                                                    FontWeight
-                                                                        .bold),
+                                                                        FontWeight
+                                                                            .bold),
                                                               ),
                                                             ],
                                                           ),
@@ -427,11 +450,12 @@ class _HomepageState extends State<Homepage> {
                                                                       '${dish.product![index].kitchenitemimage!.first.pimage}'),
                                                                   fit: BoxFit
                                                                       .cover),
-                                                              color: Colors.black,
+                                                              color:
+                                                                  Colors.black,
                                                               borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                                  10)),
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          10)),
                                                         ),
                                                         SizedBox(
                                                           height: 5,
@@ -440,44 +464,100 @@ class _HomepageState extends State<Homepage> {
                                                           width: 100,
                                                           height: 30,
                                                           decoration: BoxDecoration(
-                                                              color: Colors.blue,
+                                                              color:
+                                                                  Colors.blue,
                                                               borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                                  5)),
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          5)),
                                                           child: Row(
                                                             mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .spaceBetween,
+                                                                MainAxisAlignment
+                                                                    .spaceBetween,
                                                             children: [
                                                               GestureDetector(
                                                                   child: Icon(Icons
                                                                       .minimize),
                                                                   onTap: () {
-                                                                    Provide.incrementProductcount(dish.product![index].count);
-                                                                    // Provider.of<TaskProvider>(context,listen: false).dicrementProductcount(dish.count);
-//                                                                     setState(() {
-//                                                                       dish.product![index].count=dish.product![index].count!-1;
-// print(dish.product![index].count);
-//                                                                     });
-                                                                    print(dish.product![index].count);
+                                                                    if (dish.product![index]
+                                                                            .count ==
+                                                                        0) {
+                                                                      return;
+                                                                    }
+                                                                    setState(
+                                                                        () {
+                                                                      dish
+                                                                          .product![
+                                                                              index]
+                                                                          .count = dish
+                                                                              .product![index]
+                                                                              .count! -
+                                                                          1;
+                                                                      provid.itemCount =
+                                                                          dish.product![index].count ??
+                                                                              0;
+                                                                    });
+
+//
+//
                                                                   }),
                                                               Text(
                                                                 '${dish.product![index].count}',
-
                                                                 style: TextStyle(
                                                                     fontWeight:
-                                                                    FontWeight
-                                                                        .bold),
+                                                                        FontWeight
+                                                                            .bold),
                                                               ),
                                                               GestureDetector(
                                                                   onTap: () {
-
-
 // print(dish.product!.length);
+                                                                    setState(
+                                                                        () {
+                                                                      dish
+                                                                          .product![
+                                                                              index]
+                                                                          .count = dish
+                                                                              .product![index]
+                                                                              .count! +
+                                                                          1;
+                                                                      provid.itemCount =
+                                                                          dish.product![index].count ??
+                                                                              0;
+
+                                                                      if (cartlist
+                                                                          .isEmpty) {
+                                                                        Provide.cartitem.add(CartModel(
+                                                                            toatalamount:
+                                                                                (dish.product![index].kitchen_item_amount),
+                                                                            itemCount: dish.product![index].count,
+                                                                            itemId: dish.product![index].kitchen_item_id,
+                                                                            itemName: dish.product![index].kitchen_item_name,
+                                                                            itemPrice: dish.product![index].kitchen_item_amount));
+                                                                        return;
+                                                                      }
+                                                                      for (int i =
+                                                                              0;
+                                                                          i < cartlist.length;
+                                                                          i++) {
+                                                                        if (cartlist[i].itemId ==
+                                                                            dish.product![index].kitchen_item_id) {
+                                                                          cartlist[i].itemCount = dish
+                                                                              .product![index]
+                                                                              .count;
+                                                                        } else {
+                                                                          Provide.cartitem.add(CartModel(
+                                                                              toatalamount: (dish.product![index].kitchen_item_amount),
+                                                                              itemCount: dish.product![index].count,
+                                                                              itemId: dish.product![index].kitchen_item_id,
+                                                                              itemName: dish.product![index].kitchen_item_name,
+                                                                              itemPrice: dish.product![index].kitchen_item_amount));
+                                                                        }
+                                                                      }
+                                                                    });
                                                                   },
                                                                   child: Icon(
-                                                                      Icons.add)),
+                                                                      Icons
+                                                                          .add)),
                                                             ],
                                                           ),
                                                         )
@@ -494,20 +574,18 @@ class _HomepageState extends State<Homepage> {
                                   ),
                                 );
                               },
-                            );
-                          }else{
-                            return ListView.builder(itemCount: 5,itemBuilder: (context, index) {
-                              return Card(
-                                child: Shimmers(
-                                  height: 70,
-                                  width: double.infinity,
-                                ),
-                              );
-                            },);
-                          }
-
-                        },
-                      ),
+                            )
+                          : ListView.builder(
+                              itemCount: 5,
+                              itemBuilder: (context, index) {
+                                return Card(
+                                  child: Shimmers(
+                                    height: 70,
+                                    width: double.infinity,
+                                  ),
+                                );
+                              },
+                            ),
                     ),
                   ],
                 ),
@@ -523,7 +601,7 @@ class _HomepageState extends State<Homepage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        '1 Items',
+                        '${provid.itemCount} Items',
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                       Row(

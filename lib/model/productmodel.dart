@@ -17,7 +17,7 @@ class Product {
     required this.kitchen_item_id,
     this.products_status,
     this.item_discount_price,
-    this.count,
+    this.count=0,
 
     // this.cc,
   });
